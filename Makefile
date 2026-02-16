@@ -1,2 +1,2 @@
 all:
-	gcc cengine.c -o cengine
+	gcc cengine.c init.c -o cengine
