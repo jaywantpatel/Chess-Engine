@@ -7,24 +7,16 @@
 #define FEN3 "rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2"
 #define FEN4 "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1"
 
-void ShowSqAtBySide(const int side, const S_BOARD *pos) {
-    int rank = 0;
-    int file = 0; 
-    int sq = 0;
+void PrintBin(int move) {
 
-    printf("\n\nSquares attacked by: %c\n", SideChar[side]);
-    for(rank = RANK_8; rank >= RANK_1; rank--) {
-        for(file = FILE_A; file <= FILE_H; file++) {
-            sq = FR2SQ(file,rank);
-            if(SqAttacked(sq,side,pos) == TRUE) {
-                printf("X");
-            } else {
-                printf("-");
-            }
-        }
-        printf("\n");
+    int index = 0;
+    printf("As binary: \n");
+    for(index = 27; index >=0; index--) {
+        if( (1<<index) & move) printf("1");
+        else printf("0");
+        if(index != 28 && index%4 == 0) printf(" ");
     }
-    printf("\n\n");
+    printf("\n");
 }
 
 int main() {
@@ -33,14 +25,26 @@ int main() {
 
     S_BOARD board[1];
 
-    ParseFen(FEN1, board);
+    ParseFen(FEN2, board);
     PrintBoard(board);
-    
-    printf("\n\nWhite Attacking: \n");
-    ShowSqAtBySide(WHITE, board);
+    ASSERT(CheckBoard(board));
 
-    printf("\n\nBlack Attacking: \n");
-    ShowSqAtBySide(BLACK, board);
+    int move = 0;
+    int from = 6;
+    int to = 12;
+    int cap = wR;
+    int prom = bR;
+
+    move = (from) | (to  << 7) | (cap << 14) | (prom << 20);
+
+    printf("\ndec: %d hex: %X\n", move, move);
+    PrintBin(move);
+
+    printf("from: %d to: %d cap: %d prom: %d\n", FROMSQ(move), TOSQ(move), CAPTURED(move), PROMOTED(move));
+
+    move |= MFLAGPS;
+
+    printf("is Pawn Start: %s\n", (move & MFLAGPS) ? "YES" : "NO");
 
     return 0;
 }
