@@ -23,28 +23,22 @@ int main() {
 
     AllInit();
 
-    S_BOARD board[1];
-
-    ParseFen(FEN2, board);
-    PrintBoard(board);
-    ASSERT(CheckBoard(board));
+   
 
     int move = 0;
-    int from = 6;
-    int to = 12;
+    int from = A2;
+    int to = H7;
     int cap = wR;
-    int prom = bR;
+    int prom = bK;
 
-    move = (from) | (to  << 7) | (cap << 14) | (prom << 20);
-
-    printf("\ndec: %d hex: %X\n", move, move);
-    PrintBin(move);
+    move = ((from) | (to  << 7) | (cap << 14) | (prom << 20));
 
     printf("from: %d to: %d cap: %d prom: %d\n", FROMSQ(move), TOSQ(move), CAPTURED(move), PROMOTED(move));
 
-    move |= MFLAGPS;
+    printf("Algebraic From: %s\n", PrSq(from));
+    printf("Algebraic To: %s\n", PrSq(to));
+    printf("Algebraic Move: %s\n", PrMove(move));
 
-    printf("is Pawn Start: %s\n", (move & MFLAGPS) ? "YES" : "NO");
 
     return 0;
 }

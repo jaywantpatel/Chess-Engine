@@ -98,8 +98,8 @@ typedef struct {
 
 // Move Storage Structure
 /*
-0000 0000 0000 0000 0000 0111 1111 -> From square ,0x3F
-0000 0000 0000 0011 1111 1000 0000 -> To square >> 7, 0x3F
+0000 0000 0000 0000 0000 0111 1111 -> From square ,0x7F
+0000 0000 0000 0011 1111 1000 0000 -> To square >> 7, 0x7F
 0000 0000 0011 1100 0000 0000 0000 -> Captured Piece >> 14, 0xF
 0000 0000 0100 0000 0000 0000 0000 -> EnPas ? 0x40000
 0000 0000 1000 0000 0000 0000 0000 -> Pawn Start ? 0x80000
@@ -108,8 +108,8 @@ typedef struct {
 
 */
 
-#define FROMSQ(m) ((m) & 0x3F)
-#define TOSQ(m) (((m) >> 7) & 0x3F)
+#define FROMSQ(m) ((m) & 0x7F)
+#define TOSQ(m) (((m) >> 7) & 0x7F)
 #define CAPTURED(m) (((m) >> 14) & 0xF)
 #define PROMOTED(m) (((m) >> 20) & 0xF)
 
@@ -185,5 +185,9 @@ extern int CheckBoard(const S_BOARD *pos);
 
 //attack.c
 extern int SqAttacked(const int sq, const int side, const S_BOARD *pos);
+
+//io.c
+extern char *PrSq(const int sq);
+extern char *PrMove( const int move);
 
 #endif
