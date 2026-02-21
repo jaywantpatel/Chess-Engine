@@ -234,6 +234,7 @@ void ResetBoard(S_BOARD *pos){
     }
 
     for(index = 0; index < 3; ++index) {
+        pos->material[index] = 0;
         pos->pawns[index] = 0ULL;
     }
 
