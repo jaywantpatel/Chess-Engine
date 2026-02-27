@@ -4,7 +4,7 @@
 #include "stdio.h"
 #include "stdlib.h"
 
-#define DEBUG
+//#define DEBUG
 #ifndef DEBUG
 #define ASSERT(n)
 #else
@@ -26,7 +26,7 @@ typedef unsigned long long U64;
 #define MAXGAMEMOVES 2048
 #define MAXPOSITIONMOVES 256
 
-#define START_FEN "rnbqkbnr/pppppppp/8/8/8/8/pppppppp/RNBQKBNR w KQkq - 0 1"
+#define START_FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
 enum { EMPTY, wP, wN, wB, wR, wQ, wK, bP, bN, bB, bR, bQ, bK };
 enum { FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H, FILE_NONE };
@@ -213,5 +213,8 @@ extern void GenerateAllMoves(const S_BOARD *pos, S_MOVELIST *list);
 //makemove.c
 extern int MakeMove(S_BOARD *pos, int move);
 extern void TakeMove(S_BOARD *pos);
+
+//perft.c
+extern void PerftTest(int depth, S_BOARD *pos);
 
 #endif
