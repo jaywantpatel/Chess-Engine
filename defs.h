@@ -4,7 +4,7 @@
 #include "stdio.h"
 #include "stdlib.h"
 
-//#define DEBUG
+#define DEBUG
 #ifndef DEBUG
 #define ASSERT(n)
 #else
@@ -127,6 +127,8 @@ typedef struct {
 #define MFLAGCAP 0x7C000
 #define MFLAGPROM 0xF00000
 
+#define NOMOVE 0
+
 /* MACROS */
 
 #define FR2SQ(f,r) ( (21 + (f) ) + ( (r) * 10 ) )
@@ -199,6 +201,7 @@ extern int SqAttacked(const int sq, const int side, const S_BOARD *pos);
 extern char *PrSq(const int sq);
 extern char *PrMove( const int move);
 extern void PrintMoveList(const S_MOVELIST *list);
+extern int ParseMove(char *ptrChar, S_BOARD *pos);
 
 //validate.c
 extern int SqOnBoard(const int sq);
@@ -216,5 +219,8 @@ extern void TakeMove(S_BOARD *pos);
 
 //perft.c
 extern void PerftTest(int depth, S_BOARD *pos);
+
+//search.c
+extern void SearchPosition(S_BOARD *pos);
 
 #endif
