@@ -32,6 +32,26 @@ const int NumDir[13] = {
     0, 0, 8, 4, 4, 8, 8, 0, 8, 4, 4, 8, 8
 };
 
+int MoveExists(S_BOARD *pos, int move) {
+    S_MOVELIST list[1];
+    int moveNum = 0;
+
+    GenerateAllMoves(pos, list);
+
+    for(moveNum = 0; moveNum < list->count; ++moveNum) {
+
+        if(!MakeMove(pos, list->moves[moveNum].move)) {
+            continue;
+        }
+        TakeMove(pos);
+        if(list->moves[moveNum].move == move) {
+            return TRUE;
+        }
+    }
+
+    return FALSE;
+}
+
 const int LoopSlideIndex[2] = {0 , 4};
 const int LoopNonSlideIndex[2] = {0, 3};
 
