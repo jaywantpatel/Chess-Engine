@@ -4,7 +4,8 @@
 #include "stdio.h"
 #include "stdlib.h"
 
-#define DEBUG
+//#define DEBUG
+
 #ifndef DEBUG
 #define ASSERT(n)
 #else
@@ -30,6 +31,7 @@ typedef unsigned long long U64;
 #define START_FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
 #define INFINITE 30000
+#define MATE 29000
 
 enum { EMPTY, wP, wN, wB, wR, wQ, wK, bP, bN, bB, bR, bQ, bK };
 enum { FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H, FILE_NONE };
@@ -250,6 +252,7 @@ extern int PieceValid(const int pce);
 //movegen.c
 extern void GenerateAllMoves(const S_BOARD *pos, S_MOVELIST *list);
 extern int MoveExists(S_BOARD *pos, const int move);
+extern void InitMvvLva();
 
 //makemove.c
 extern int MakeMove(S_BOARD *pos, int move);

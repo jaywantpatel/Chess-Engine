@@ -5,6 +5,23 @@ static void CheckUp() {
     //check if time is up, if stop was called, etc
 }
 
+static void PickNextMove(int moveNum, S_MOVELIST *list) {
+    S_MOVE temp;
+    int index = 0;
+    int bestScore = 0;
+    int bestNum = moveNum;
+
+    for(index = moveNum; index < list->count; ++index) {
+        if(list->moves[index].score > bestScore) {
+            bestScore = list->moves[index].score;
+            bestNum = index;
+        }
+    }
+    temp = list->moves[moveNum];
+    list->moves[moveNum] = list->moves[bestNum];
+    list->moves[bestNum] = temp;
+}
+
 static int IsRepetition(const S_BOARD *pos) {
     int index = 0;
 
@@ -80,6 +97,8 @@ static int AlphaBeta(int alpha, int beta, int depth, S_BOARD *pos, S_SEARCHINFO 
 
     for(MoveNum = 0; MoveNum < list->count; ++MoveNum) {
 
+        PickNextMove(MoveNum, list);
+
         if(!MakeMove(pos, list->moves[MoveNum].move)) {
             continue;
         }
@@ -103,7 +122,7 @@ static int AlphaBeta(int alpha, int beta, int depth, S_BOARD *pos, S_SEARCHINFO 
 
     if(Legal == 0) {
         if(SqAttacked(pos->KingSq[pos->side], pos->side ^ 1, pos)) {
-            return -INFINITE + pos->ply;
+            return -MATE + pos->ply;
         } else {
             return 0;
         }
@@ -131,15 +150,16 @@ void SearchPosition(S_BOARD *pos, S_SEARCHINFO *info) {
 
         bestScore = AlphaBeta(-INFINITE, INFINITE, currentDepth, pos, info, TRUE);
 
-        bestMove = pos->PvArray[0];
-        printf("Depth: %d, Score: %d, Move: %s, Nodes: %ld\n", currentDepth, bestScore, PrMove(bestMove), info->nodes);
-
         pvMoves = GetPvLine(currentDepth, pos);
+
+        bestMove = (pvMoves > 0) ? pos->PvArray[0] : NOMOVE;
+        printf("Depth: %d, Score: %d, Move: %s, Nodes: %ld\n", currentDepth, bestScore, PrMove(bestMove), info->nodes);
+       
         printf("PvLine: ");
         for(pvNum = 0; pvNum < pvMoves; ++pvNum) {
             printf(" %s", PrMove(pos->PvArray[pvNum]));
         }
         printf("\n");
-        printf("Ordering: %.2f\n", (info->fhf/info->fh));
+        printf("Ordering: %.2f\n", (info->fh > 0.0f) ? (info->fhf/info->fh) : 0.0f);
     }
 }
