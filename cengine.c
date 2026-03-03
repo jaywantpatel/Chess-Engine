@@ -9,8 +9,9 @@ int main() {
     AllInit();
 
     S_BOARD board[1];
+    board->PvTable->pTable = (S_PVENTRY *) NULL;
     S_MOVELIST list[1];
-
+    S_SEARCHINFO info[1];
     ParseFen(START_FEN, board);
     //PerftTest(3, board);
     
@@ -28,15 +29,9 @@ int main() {
             break;
         } else if(input[0] == 't') {
             TakeMove(board);
-        } else if(input[0] == 'p') {
-            //PerftTest(4, board);
-            Max = GetPvLine(4, board);
-            printf("PvLine of %d Moves: ", Max);
-            for(PvNum = 0; PvNum < Max; ++PvNum) {
-                Move = board->PvArray[PvNum];
-                printf("%s ", PrMove(Move));
-            }
-            printf("\n");
+        } else if(input[0] == 's') {
+            info->depth = 4;
+            SearchPosition(board, info);
         } else {
             Move = ParseMove(input, board);
             if(Move != NOMOVE) {

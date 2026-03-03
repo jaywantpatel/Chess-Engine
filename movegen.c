@@ -256,7 +256,7 @@ void GenerateAllMoves(const S_BOARD *pos, S_MOVELIST *list) {
 
                 while(!SQOFFBOARD(t_sq)){
                     if(pos->pieces[t_sq] != EMPTY) {
-                        if( PieceCol[pos->pieces[t_sq]] == side ^ 1) {
+                        if( PieceCol[pos->pieces[t_sq]] == (side ^ 1)) {
                             AddCaptureMove(pos, MOVE(sq, t_sq, pos->pieces[t_sq], EMPTY, 0), list);
                         }
                         break;
@@ -290,7 +290,7 @@ void GenerateAllMoves(const S_BOARD *pos, S_MOVELIST *list) {
                 } 
 
                 if(pos->pieces[t_sq] != EMPTY) {
-                    if( PieceCol[pos->pieces[t_sq]] == side ^ 1) {
+                    if( PieceCol[pos->pieces[t_sq]] == (side ^ 1)) {
                         AddCaptureMove(pos, MOVE(sq, t_sq, pos->pieces[t_sq], EMPTY, 0), list);
                     }
                     continue;
