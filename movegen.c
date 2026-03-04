@@ -8,6 +8,9 @@ const int LoopSlidePce[8] = {
     wB, wR, wQ, 0, bB, bR, bQ, 0
 };
 
+const int LoopSlideIndex[2] = {0 , 4};
+const int LoopNonSlideIndex[2] = {0, 3};
+
 const int LoopNonSlidePce[6] = {
     wN, wK, 0, bN, bK, 0
 };
@@ -68,24 +71,41 @@ int MoveExists(S_BOARD *pos, int move) {
     return FALSE;
 }
 
-const int LoopSlideIndex[2] = {0 , 4};
-const int LoopNonSlideIndex[2] = {0, 3};
-
 static void AddQuietMove( const S_BOARD *pos, int move, S_MOVELIST *list) {
+
+    ASSERT(SqOnBoard(FROMSQ(move)));
+    ASSERT(SqOnBoard(TOSQ(move)));
+
     list->moves[list->count].move = move;
-    list->moves[list->count].score = 0;
+
+    if ( pos->searchKillers[0][pos->ply] == move) {
+        list->moves[list->count].score = 900000;
+    } else if (pos->searchKillers[1][pos->ply] == move) {
+        list->moves[list->count].score = 800000;
+    } else {
+        list->moves[list->count].score = pos->searchHistory[pos->pieces[FROMSQ(move)]][TOSQ(move)];
+    }
     list->count++;
 }
 
 static void AddCaptureMove( const S_BOARD *pos, int move, S_MOVELIST *list) {
+
+    ASSERT(SqOnBoard(FROMSQ(move)));
+    ASSERT(SqOnBoard(TOSQ(move)));
+    ASSERT(PieceValid(CAPTURED(move)));
+
     list->moves[list->count].move = move;
-    list->moves[list->count].score = MvvLvaScores[CAPTURED(move)][pos->pieces[FROMSQ(move)]];
+    list->moves[list->count].score = MvvLvaScores[CAPTURED(move)][pos->pieces[FROMSQ(move)]] + 1000000;
     list->count++;
 }
 
 static void AddEnPassantMove( const S_BOARD *pos, int move, S_MOVELIST *list) {
+
+    ASSERT(SqOnBoard(FROMSQ(move)));
+    ASSERT(SqOnBoard(TOSQ(move)));
+
     list->moves[list->count].move = move;
-    list->moves[list->count].score = 105;
+    list->moves[list->count].score = 105 + 1000000;
     list->count++;
 }
 
@@ -185,12 +205,14 @@ void GenerateAllMoves(const S_BOARD *pos, S_MOVELIST *list) {
                 AddWhitePawnCapMove(pos, sq, sq+11, pos->pieces[sq + 11], list);
             }
 
-            if(sq + 9 == pos->enPas) {
-                AddCaptureMove(pos, MOVE(sq, sq+9, EMPTY, EMPTY, MFLAGEP), list);
-            }
+            if(pos->enPas != NO_SQ) {
+                if(sq + 9 == pos->enPas) {
+                   AddEnPassantMove(pos, MOVE(sq, sq+9, EMPTY, EMPTY, MFLAGEP), list);
+                }
 
-            if(sq + 11 == pos->enPas) {
-                AddCaptureMove(pos, MOVE(sq ,sq+11, EMPTY, EMPTY, MFLAGEP), list);
+                if(sq + 11 == pos->enPas) {
+                    AddEnPassantMove(pos, MOVE(sq ,sq+11, EMPTY, EMPTY, MFLAGEP), list);
+                }
             }
         }
 
@@ -229,12 +251,14 @@ void GenerateAllMoves(const S_BOARD *pos, S_MOVELIST *list) {
                 AddBlackPawnCapMove(pos, sq, sq-11, pos->pieces[sq - 11], list);
             }
 
-            if(sq - 9 == pos->enPas) {
-                AddCaptureMove(pos, MOVE(sq, sq-9, EMPTY, EMPTY, MFLAGEP), list);
-            }
+            if(pos->enPas != NO_SQ) {
+                if(sq - 9 == pos->enPas) {
+                    AddEnPassantMove(pos, MOVE(sq, sq-9, EMPTY, EMPTY, MFLAGEP), list);
+                }
 
-            if(sq - 11 == pos->enPas) {
-                AddCaptureMove(pos, MOVE(sq ,sq-11, EMPTY, EMPTY, MFLAGEP), list);
+                if(sq - 11 == pos->enPas) {
+                    AddEnPassantMove(pos, MOVE(sq ,sq-11, EMPTY, EMPTY, MFLAGEP), list);
+                }
             }
         }
 
